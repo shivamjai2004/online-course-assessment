@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Exam Result</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+<main class="container py-5">
+  <div class="card shadow-sm">
+    <div class="card-body p-4">
+      {% if total and score >= 70 %}
+        <h1 class="text-success">Congratulations!</h1>
+        <p class="lead">You successfully passed the assessment.</p>
+      {% elif total %}
+        <h1 class="text-primary">Exam completed</h1>
+        <p class="lead">Keep practising. You can improve your score.</p>
+      {% else %}
+        <h1>Result unavailable</h1>
+        <p>No submitted answers were found for this lesson.</p>
+      {% endif %}
+      <h2 class="h4">{{ lesson.title }} — Exam Results</h2>
+      <div class="row g-3 my-3">
+        <div class="col-sm-4"><div class="p-3 bg-light rounded"><div class="text-muted">Score</div><strong class="fs-3">{{ score }}%</strong></div></div>
+        <div class="col-sm-4"><div class="p-3 bg-light rounded"><div class="text-muted">Correct</div><strong class="fs-3">{{ correct }}/{{ total }}</strong></div></div>
+        <div class="col-sm-4"><div class="p-3 bg-light rounded"><div class="text-muted">Passing score</div><strong class="fs-3">70%</strong></div></div>
+      </div>
+      <h3 class="h5 mt-4">Answer review</h3>
+      {% for item in results %}
+        <div class="border rounded p-3 mb-3">
+          <p class="fw-semibold mb-2">{{ forloop.counter }}. {{ item.question.question_text }}</p>
+          <p class="mb-1">Your answer: {{ item.submission.selected_choice|default:"Not answered" }}</p>
+          <p class="mb-1">Correct answer: {{ item.correct_choice|default:"Not configured" }}</p>
+          {% if item.submission.is_correct %}<span class="badge bg-success">Correct</span>{% else %}<span class="badge bg-danger">Incorrect</span>{% endif %}
+        </div>
+      {% empty %}
+        <p>No answer details to display.</p>
+      {% endfor %}
+      <a class="btn btn-primary mt-2" href="{% url 'course_details' lesson.course_id %}">Back to course</a>
+    </div>
+  </div>
+</main>
+</body>
+</html>
